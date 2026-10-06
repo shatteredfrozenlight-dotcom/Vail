@@ -1,362 +1,462 @@
-[README.md](https://github.com/user-attachments/files/33087922/README.md)
-# Vail
-A encrypted sms app that is safer then most. In beta .. I am improving this consistantly . 
+[[README.md](https://github.com/user-attachments/files/33088277/README.md)
 # Veil Messenger
 
-Veil Messenger is an Android SMS/MMS messaging application designed to
-provide a privacy-focused messaging experience while retaining
-compatibility with the cellular SMS/MMS system.
+**End-to-end encrypted messaging over ordinary SMS and MMS.**
 
-This README describes the supplied APK build (`app-release.apk`, version
-`1.0.0`) based on an inspection of the packaged application.
+**Version:** 1.0.0 (build 1)  
+**Package:** `com.veil.messenger`  
+**Minimum Android:** Android 8.0 (API 26)  
+**Target Android:** Android 15 (API 35)
 
-## Overview
+---
 
-Veil Messenger is intended to function as a full Android messaging
-application rather than simply a text-encryption utility.
+## What is Veil?
 
-The supplied APK contains Android SMS/MMS components for:
+Veil is an Android messaging application designed to provide end-to-end encrypted messaging while using the normal cellular SMS/MMS network.
 
--   Sending SMS messages
--   Receiving SMS messages
--   Receiving MMS/WAP push messages
--   Sending messages through Android's SMS/MMS mechanisms
--   Handling SMS delivery events
--   Handling MMS delivery events
--   Responding to messaging intents such as `SEND`, `SENDTO`, and
-    `RESPOND_VIA_MESSAGE`
--   Reading contacts and SMS data
--   Recording audio for messaging-related functionality
+Veil uses the **Signal Protocol** for message encryption and can operate as the phone's default SMS application.
 
-The application package is:
+There is **no account or sign-up process**, and the application does **not request the Android `INTERNET` permission**. Key exchange and encrypted message transport are performed through the SMS/MMS system.
 
-`com.veil.messenger`
+When both participants use Veil, the message content is encrypted before it is sent through the carrier. The carrier still transports the message, but the protected message content is presented as ciphertext rather than readable plaintext.
 
-The main application activity is:
+If the recipient does not use Veil, the conversation can continue as a normal SMS/MMS conversation. This allows Veil to function as a replacement for a conventional messaging application while providing secure messaging when both parties support it.
 
-`com.veil.messenger.MainActivity`
+---
 
-The application class is:
+## Key Features
 
-`com.veil.messenger.VeilApplication`
+| Feature | Details |
+|---|---|
+| **End-to-end encryption** | Signal Protocol using the Double Ratchet and pre-key system |
+| **No account or central server** | No sign-up and no central messaging server; key exchange occurs through SMS |
+| **No Internet permission** | The APK does not request Android's `INTERNET` permission |
+| **Default SMS/MMS app** | Sends and receives SMS/MMS and handles Android messaging intents |
+| **Encrypted photos** | Attachments receive an additional AES-256-GCM encryption layer |
+| **Encrypted voice notes** | Voice notes are recorded in-app and protected before transport |
+| **Safety numbers** | Numeric fingerprint verification helps users confirm contact identity |
+| **Identity-change warnings** | Users are warned when a contact's cryptographic identity changes |
+| **Delivery/read receipts** | Sent, delivered and read states are supported |
+| **Encrypted local storage** | Message database uses SQLCipher |
+| **App security lock** | Veil Security Lock protects access using the device's screen lock |
 
-## Privacy and Security
+---
 
-Veil Messenger includes several security-related components in the
-supplied APK.
+# Installation
 
-Notable components detected in the build include:
+## Android
 
--   SQLCipher native libraries for encrypted SQLite database support
--   An `EnhancedEncryption` component
--   Fingerprint/key-related components
--   `FingerprintProtocol.proto`
--   `WhisperTextProtocol.proto`
--   `LocalStorageProtocol.proto`
+1. Copy `app-release.apk` to your Android device.
+2. Open the APK with your browser or file manager.
+3. If Android asks for permission to install applications from that source, allow it.
+4. Tap **Install**.
+5. Open **Veil**.
+6. Grant the permissions required for messaging.
+7. Set Veil as your **default SMS application** when prompted.
 
-These components indicate that the application contains infrastructure
-for encrypted local storage and enhanced/encrypted messaging.
+The supplied APK is signed using Android v1, v2 and v3 signing schemes and contains native libraries for:
 
-**Important:** The presence of encryption-related code or libraries does
-not, by itself, prove that every message is encrypted end-to-end in
-every situation. SMS and MMS sent through a cellular carrier remain
-subject to the normal limitations of those carrier protocols. The actual
-encrypted messaging protocol should be independently tested and audited
-before making strong security guarantees.
+- `arm64-v8a`
+- `armeabi-v7a`
+- `x86`
+- `x86_64`
 
-## SMS/MMS Compatibility
+---
 
-Veil Messenger contains the Android components normally required for an
-SMS/MMS application, including:
+# Getting Started
 
--   `SmsDeliverReceiver`
--   `MmsDeliverReceiver`
--   `HeadlessSmsSendService`
+### 1. Make Veil your default SMS application
 
-The manifest also declares Android SMS/MMS permissions and messaging
-intent filters.
+If Veil is not the default SMS application, the home screen displays a prompt explaining that the default SMS role is required to enable secure messaging.
 
-This allows the application to participate in the Android messaging
-system and, where Android permits it, operate as the user's default SMS
-application.
+### 2. Start a conversation
 
-### Carrier SMS/MMS
+Tap **New conversation** and enter the contact's phone number.
 
-When a message is sent as ordinary carrier SMS/MMS, the message travels
-through the cellular messaging infrastructure.
+### 3. Start Secure Chat
 
-Veil Messenger cannot change the fundamental transport characteristics
-of carrier SMS/MMS simply by being the application used to compose the
-message.
+Tap **Start Secure Chat**.
 
-For privacy-sensitive communication, the recipient must support the
-application's encrypted messaging mechanism if the message is to remain
-protected beyond the normal SMS/MMS transport.
+Veil sends the initial key-exchange message through SMS. The other Veil installation processes the handshake automatically.
 
-## Permissions
+### 4. Confirm the secure session
 
-The supplied APK requests permissions associated with messaging and
-communications, including:
+Once the secure session has been established, the conversation displays:
 
--   `READ_SMS` --- access SMS data
--   `SEND_SMS` --- send SMS messages
--   `RECEIVE_SMS` --- receive SMS messages
--   `RECEIVE_MMS` --- receive MMS messages
--   `RECEIVE_WAP_PUSH` --- receive WAP push/MMS delivery messages
--   `BROADCAST_SMS` --- SMS broadcast handling
--   `BROADCAST_WAP_PUSH` --- WAP push broadcast handling
--   `SEND_RESPOND_VIA_MESSAGE` --- respond through Android's messaging
-    integration
--   `READ_CONTACTS` --- access contacts
--   `RECORD_AUDIO` --- microphone/audio functionality
--   `POST_NOTIFICATIONS` --- display notifications on supported Android
-    versions
--   `DUMP` --- declared by the supplied build
+> `[Veil] Secure session established.`
 
-Only grant permissions that are necessary for the functions you intend
-to use. Android may also restrict some permissions or messaging
-capabilities depending on the device and whether Veil is configured as
-the default SMS application.
+A locked padlock indicates that the conversation is operating in secure mode.
 
-## Installation
+Messages, photos and voice notes sent through the secure session are encrypted.
 
-### Android
+### 5. Verify the safety number
 
-1.  Transfer `app-release.apk` to the Android device.
-2.  Open the APK using a file manager or browser.
-3.  If Android asks for permission to install apps from that source,
-    allow the file manager/browser to install unknown applications.
-4.  Install Veil Messenger.
-5.  Open Veil Messenger.
-6.  Grant only the permissions required for the messaging features you
-    intend to use.
-7.  If you want Veil to handle normal SMS/MMS, configure it as the
-    default SMS application when Android offers that option.
+Open the conversation's **Security** controls and compare the displayed safety number with the contact through another communication channel, such as a phone call.
 
-### Updating an Existing Installation
+When the numbers match, select **I've verified the code**.
 
-Android normally requires an update APK to be signed with the same
-signing identity as the existing installation.
+This provides an additional identity-verification step and helps protect against an attacker attempting to impersonate a contact.
 
-If the signing key is different, Android may require the old application
-to be uninstalled before this build can be installed. Uninstalling may
-remove locally stored application data, so back up anything important
-first.
+---
 
-## Basic Use
+# How Veil Works
 
-After installation:
+Veil places its own messaging protocol around ordinary SMS text.
 
-1.  Launch **Veil Messenger**.
-2.  Complete the initial permissions/setup requested by Android.
-3.  Allow SMS/MMS access if you want Veil to manage carrier messaging.
-4.  Create or select a conversation.
-5.  Use the application's messaging controls to compose and send a
-    message.
-6.  When communicating with another Veil user, use the application's
-    encrypted messaging functionality where supported.
-7.  Verify security/fingerprint information when the application
-    provides it.
+Veil messages use the following marker:
 
-## Security Verification
-
-For security-sensitive use, do not rely solely on the application's name
-or user interface.
-
-A proper verification process should include:
-
-### 1. Verify the APK
-
-Record the cryptographic hash of the APK you install and compare it with
-the hash supplied by the developer/distribution source.
-
-Example:
-
-``` bash
-sha256sum app-release.apk
+```text
+VEIL1:
 ```
 
-### 2. Verify the signing certificate
+The marker is followed by a message type and a Base64-encoded payload.
 
-The APK should be checked to determine who signed it and whether future
-releases are signed by the expected certificate.
+Content without the Veil marker is handled as ordinary SMS.
 
-Android's signing model uses the application signing certificate to
-establish update authenticity.
+## Protocol Message Types
 
-### 3. Test encrypted messaging
+| Marker | Type | Purpose |
+|---|---|---|
+| `VEIL1:H:` | Handshake | Carries the public-key bundle, including the identity key, signed pre-key and one-time pre-key |
+| `VEIL1:P:` | Pre-key message | Establishes the initial encrypted session using the recipient's pre-key |
+| `VEIL1:M:` | Encrypted message | Normal Double Ratchet message after a secure session exists |
+| `VEIL1:R:` | Receipt | Carries delivery/read confirmation information |
 
-Use two test devices and verify:
+### Attachments
 
--   Whether the encrypted mode actually performs cryptographic
-    encryption
--   Whether plaintext is transmitted outside the intended encrypted
-    protocol
--   Whether keys are generated securely
--   Whether key/fingerprint verification works
--   Whether messages remain encrypted before transport
--   Whether message history is protected locally
--   What happens when the recipient does not support the encrypted
-    protocol
--   Whether the application silently falls back to ordinary SMS/MMS
+Photos and voice notes receive a separate **AES-256-GCM** encryption layer.
 
-### 4. Inspect network traffic
+The one-time attachment key is sent inside an already encrypted Veil message. This means the carrier does not receive the attachment key as ordinary plaintext.
 
-For a serious privacy evaluation, test the application while monitoring
-its network and cellular behavior.
+Attachments are transported using MMS.
 
-Look for:
+---
 
--   Unexpected remote connections
--   Plaintext message content
--   Metadata transmission
--   Analytics/telemetry
--   External authentication services
--   Cloud synchronization
--   Third-party SDK traffic
+# Encryption
 
-## Local Data Protection
+Veil's documented cryptographic architecture includes:
 
-The supplied APK includes a native SQLCipher library:
+### Messages
 
--   `libsqlcipher.so`
+**Signal Protocol**
 
-for multiple Android CPU architectures.
+The messaging layer uses the Signal Protocol, including:
 
-The build also contains local-storage protocol definitions and
-security-related components.
+- Identity keys
+- Signed pre-keys
+- One-time pre-keys
+- Pre-key session establishment
+- Double Ratchet messaging
 
-This suggests that protected local database storage is part of the
-application's architecture.
+### Attachments
 
-However, the existence of SQLCipher does not automatically mean that
-every piece of application data is encrypted. A complete security audit
-should determine:
+**AES-256-GCM**
 
--   Which databases use SQLCipher
--   How database keys are generated
--   Where keys are stored
--   Whether backups contain plaintext
--   Whether logs contain sensitive information
--   Whether temporary files contain message content
--   Whether notifications expose message text
+Photos and voice notes receive an additional encryption layer before being transported through MMS.
 
-## Technical Information
+### Fingerprints
 
-### Package
+**SHA-256**
 
-`com.veil.messenger`
+Safety numbers/fingerprints are derived for identity verification.
 
-### Version
+### Local database
 
-`1.0.0`
+**SQLCipher**
 
-### Main Activity
+The local message database is encrypted.
 
-`com.veil.messenger.MainActivity`
+The database passphrase is stored using Android encrypted preferences.
 
-### Application Class
+---
 
-`com.veil.messenger.VeilApplication`
+# SMS/MMS Compatibility
 
-### Messaging Components
+Veil is designed to operate as a normal Android SMS/MMS application as well as a secure messaging application.
 
--   `com.veil.messenger.sms.SmsDeliverReceiver`
--   `com.veil.messenger.sms.MmsDeliverReceiver`
--   `com.veil.messenger.sms.HeadlessSmsSendService`
+It supports Android messaging functions including:
 
-### Notable packaged security/protocol components
+- SMS
+- MMS
+- `sms:`
+- `smsto:`
+- `mms:`
+- `mmsto:`
+- Respond-via-message integration
 
--   SQLCipher
--   Enhanced Encryption
--   Fingerprint protocol
--   Whisper text protocol
--   Local storage protocol
+The application contains the Android messaging components required for default SMS operation, including:
 
-### UI Framework
+```text
+SmsDeliverReceiver
+MmsDeliverReceiver
+HeadlessSmsSendService
+```
 
-The APK contains Jetpack Compose / Material 3 components.
+---
 
-### Native Architectures
+# Secure vs. Regular Messages
 
-The supplied APK contains native libraries for:
+Veil has two distinct messaging states.
 
--   ARM64 (`arm64-v8a`)
--   ARM 32-bit (`armeabi-v7a`)
--   x86
--   x86_64
+## Secure Veil conversation
 
-## Current Status
+When both participants have Veil and a secure session has been established:
 
-This README documents the supplied APK build as an application package.
+- Message content is encrypted.
+- Signal Protocol protection is used.
+- Attachments receive additional AES-256-GCM protection.
+- The conversation displays secure-session indicators.
 
-It is **not** a certification that the application is cryptographically
-secure.
+## Regular SMS/MMS conversation
 
-Before using Veil Messenger for high-risk communications, perform a
-complete security audit covering the cryptographic implementation, key
-management, fallback behavior, local storage, backups, notifications,
-logs, network connections, and SMS/MMS transport.
+If the recipient does not use Veil, the conversation operates as ordinary SMS/MMS.
 
-## Known Transport Limitation
+Those messages are **not end-to-end encrypted by Veil**.
 
-Ordinary SMS/MMS is not an end-to-end encrypted transport.
+The application identifies the conversation as an ordinary SMS/MMS conversation rather than a secure Veil conversation.
 
-The cellular carrier can generally obtain information associated with
-SMS/MMS traffic, including routing and delivery metadata, and ordinary
-SMS/MMS content is not protected by the application's encryption merely
-because Veil Messenger is used to send it.
+### Important
 
-Veil's encrypted messaging system should therefore be treated as a
-separate communication mode and tested independently.
+Using Veil as the messaging application does **not** automatically make every SMS or MMS end-to-end encrypted.
 
-## Recommended Testing Checklist
+**Both participants must use Veil and establish a secure session for Veil's end-to-end encryption to apply.**
 
-Before distributing the application:
+---
 
--   [ ] Install on a clean Android device
--   [ ] Test SMS sending
--   [ ] Test SMS receiving
--   [ ] Test MMS sending
--   [ ] Test MMS receiving
--   [ ] Test contact access
--   [ ] Test notification behavior
--   [ ] Test microphone-related features
--   [ ] Test encrypted messaging between two Veil installations
--   [ ] Verify fingerprints/keys
--   [ ] Test invalid or changed fingerprints
--   [ ] Test encrypted-to-non-Veil fallback
--   [ ] Confirm fallback is clearly indicated to the user
--   [ ] Inspect local database contents
--   [ ] Test application backup/restore
--   [ ] Inspect application logs
--   [ ] Inspect network traffic
--   [ ] Verify APK signing certificate
--   [ ] Record the release SHA-256 hash
--   [ ] Test on the Android versions/devices you intend to support
+# What Veil Protects
 
-## Disclaimer
+According to the supplied build documentation, Veil is designed to protect:
 
-Veil Messenger is provided as software for testing and development.
+### Message content
 
-Do not assume that a message is secure merely because it is displayed as
-encrypted. Security claims should be based on verification of the actual
-cryptographic implementation and communication protocol.
+Messages between two Veil users are protected using the Signal Protocol.
 
-Android, SMS, MMS, and related trademarks and technologies belong to
-their respective owners.
+### Attachments
 
-## License
+Photos and voice notes receive an additional AES-256-GCM encryption layer.
 
-No license information was identified from the supplied APK inspection.
+### Local message storage
 
-If this project is distributed publicly, include an appropriate
-`LICENSE` file and update this section with the applicable license
-terms.
+The message database is encrypted using SQLCipher.
 
-------------------------------------------------------------------------
+### Application backup
 
-**Build documented:** `app-release.apk`\
-**Application:** Veil Messenger\
-**Package:** `com.veil.messenger`\
-**Version:** `1.0.0`
+Android automatic backup is disabled so application keys are not copied to cloud backup.
+
+### Network access
+
+The application does not request the Android `INTERNET` permission.
+
+Cleartext network traffic is also disabled.
+
+---
+
+# What Veil Cannot Hide
+
+Veil protects message content, but SMS/MMS still exposes metadata to the cellular carrier.
+
+Depending on the carrier and network, information such as the following can remain visible:
+
+- Who you are communicating with
+- When messages are sent
+- Message routing information
+- Approximate message size
+- Cellular delivery information
+
+This is an important limitation of using SMS/MMS as the underlying transport.
+
+**Veil encrypts the message content; it does not make the cellular SMS/MMS network anonymous.**
+
+---
+
+# Identity Changes
+
+Reinstalling Veil or clearing the application's data creates a new cryptographic identity.
+
+When this happens, contacts are warned that the identity has changed.
+
+A changed identity should be treated as requiring verification.
+
+Users should compare the new safety number with their contact before continuing sensitive communications.
+
+---
+
+# Delivery Receipts
+
+Veil uses visual indicators for message status:
+
+- **One check:** Sent
+- **Two checks:** Delivered
+- **Blue indicator:** Read
+
+Receipt information is handled by the Veil protocol.
+
+---
+
+# Permissions
+
+| Permission | Purpose |
+|---|---|
+| `SEND_SMS` | Send SMS messages and secure-session handshakes |
+| `RECEIVE_SMS` | Receive SMS messages |
+| `RECEIVE_MMS` | Receive MMS messages |
+| `RECEIVE_WAP_PUSH` | Receive WAP push/MMS delivery messages |
+| `READ_SMS` | Read existing messages from the Android SMS store |
+| `READ_CONTACTS` | Display contact names instead of only phone numbers |
+| `RECORD_AUDIO` | Record voice notes |
+| `POST_NOTIFICATIONS` | Display new-message notifications on Android 13+ |
+
+### Internet access
+
+Veil does **not** request:
+
+```text
+android.permission.INTERNET
+```
+
+This is an intentional part of the application's architecture and means the application is not designed to communicate with a conventional Internet-based messaging server.
+
+---
+
+# Privacy Notes
+
+Veil's design is intended to keep the encrypted messaging process between participating phones while using the carrier as the transport layer.
+
+This architecture provides an important distinction:
+
+**The carrier transports the messages, but secure Veil message content is encrypted before carrier transmission.**
+
+The carrier can still observe the normal metadata associated with SMS/MMS.
+
+For this reason, Veil should be understood as a **privacy and encryption layer over SMS/MMS**, not as an anonymous cellular communications system.
+
+---
+
+# Security Verification
+
+For sensitive communications, users should verify the identity of contacts using Veil's safety-number system.
+
+A recommended verification process is:
+
+1. Open the secure conversation.
+2. Open the **Security** section.
+3. Display the contact's safety number.
+4. Compare it with the contact using a separate trusted communication channel.
+5. Confirm that both numbers match.
+6. Mark the contact as verified.
+
+If Veil reports an identity change, stop and verify the new identity before continuing sensitive communication.
+
+---
+
+# Technical Details
+
+| Item | Value |
+|---|---|
+| **Application** | Veil |
+| **Package** | `com.veil.messenger` |
+| **Version** | 1.0.0 |
+| **Version code** | 1 |
+| **Minimum SDK** | Android 8.0 / API 26 |
+| **Target SDK** | Android 15 / API 35 |
+| **Language** | Kotlin |
+| **UI** | Jetpack Compose + Material 3 |
+| **Navigation** | Navigation Compose |
+| **Messaging encryption** | Signal Protocol |
+| **Attachment encryption** | AES-256-GCM |
+| **Fingerprint hashing** | SHA-256 |
+| **Database** | Room + SQLCipher |
+| **Secure preferences** | Android EncryptedSharedPreferences |
+| **SMS component** | `SmsDeliverReceiver` |
+| **MMS component** | `MmsDeliverReceiver` |
+| **Default SMS service** | `HeadlessSmsSendService` |
+| **Native ABIs** | arm64-v8a, armeabi-v7a, x86, x86_64 |
+| **APK size** | Approximately 37.5 MB |
+| **APK signatures** | v1, v2 and v3 |
+
+---
+
+# Compatibility
+
+Veil requires a device capable of providing cellular SMS/MMS service.
+
+A SIM and carrier plan supporting SMS/MMS are required for normal messaging.
+
+Carrier charges for SMS/MMS may apply.
+
+The application is designed for Android 8.0 and newer, with the supplied build targeting Android 15.
+
+---
+
+# Troubleshooting
+
+## Veil says it is not the default SMS app
+
+Open Android's default-app settings and select Veil as the default SMS application.
+
+The secure messaging functionality depends on Veil being able to operate as the device's SMS application.
+
+## Secure Chat cannot be established
+
+Check that:
+
+1. Both users have Veil installed.
+2. Both users have SMS service.
+3. Both applications are able to send and receive SMS.
+4. The initial handshake was delivered.
+5. Neither application has had its data cleared or identity replaced unexpectedly.
+
+## A contact's identity changed
+
+Do not automatically accept the change.
+
+Verify the contact's new safety number through another trusted communication channel.
+
+## Messages are being sent as ordinary SMS
+
+Confirm that:
+
+- The recipient is using Veil.
+- A secure session has been established.
+- The conversation displays the secure-session indicator.
+- The message is not being sent through a regular SMS/MMS thread.
+
+---
+
+# Important Security Statement
+
+Veil's secure messaging architecture is designed to provide end-to-end encryption between participating Veil users.
+
+However, no application should be considered secure solely because it uses the Signal Protocol or another recognized cryptographic library.
+
+Users and developers should distinguish between:
+
+- **The cryptographic design**
+- **The implementation**
+- **The device security**
+- **The Android operating system**
+- **The cellular transport**
+- **Metadata protection**
+
+Veil's encryption protects the contents of secure Veil messages. It does not eliminate SMS/MMS metadata visible to the carrier, and ordinary SMS/MMS conversations with non-Veil users remain unencrypted.
+
+---
+
+# Project Information
+
+**Application:** Veil Messenger  
+**Package:** `com.veil.messenger`  
+**Version:** 1.0.0 (build 1)
+
+Questions, bug reports and feedback can be sent to:
+
+**thecanadianfrost@protonmail.com**
+
+---
+
+## Documentation Basis
+
+This README reflects the supplied Veil 1.0.0 release documentation and APK inspection.
+
+The documented behavior applies specifically to **Veil 1.0.0 (build 1)** and may change in later releases.
+
